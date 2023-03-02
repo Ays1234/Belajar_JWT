@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -31,9 +31,9 @@ class AuthController extends Controller
 ]);
 
     if ($user){
-        return response()->json('message' => 'Pendaftaran');
+        return response()->json(['message' => 'Pendaftaran']);
     }else{
-        return  response()->json($data, 200, $headers);
+        return  response()->json(['message'=>'Pendaftaraan gagal']);
     }
 
     }
