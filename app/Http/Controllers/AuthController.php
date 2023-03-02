@@ -33,7 +33,7 @@ class AuthController extends Controller
     if ($user){
         return response()->json('message' => 'Pendaftaran');
     }else{
-        return return response()->json($data, 200, $headers);
+        return  response()->json($data, 200, $headers);
     }
 
     }
