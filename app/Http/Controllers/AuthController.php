@@ -7,14 +7,59 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Bank;
 
 class AuthController extends Controller
 {
     //
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('api', ['except' => ['login', 'register']]);
     }
+
+//     public function add_bank()
+//     {
+//         $validator = Validator::make(request()->all(),
+//         ['name' => 'required',
+//         'acronym' => 'required',
+//          'code' => 'required',
+//         'icon'=>'required',
+//     'status' => 'required'
+//     ]);
+//     if($validator->fails()){
+//         // return response()->json($validator->messages());
+
+//         return response()->json(['message' => 'Ggagk']);
+//     }
+
+//     $bank =Bank::create([
+//         'name' => request('name')
+
+//     //     'acronym' => request('acronym'),
+//     // 'code' => request('code'),
+//     // 'icon'=> request('icon'),
+//     // 'status'=> request('status')
+// ]);
+
+//     if ($bank){
+//         // return response()->json(['message' => 'Pendaftaran']);
+
+//         return response()->json([
+//             'status' => true,
+//             'error' => false,
+//             'message' => 'success',
+//             'user' => $bank,
+//         ], 200);
+//     }else{
+//         return response()->json([
+//             'status' => false,
+//             'error' => false,
+//             'message' => 'Error',
+//             'data' => null,
+//         ], 200);
+//     }
+
+//     }
 
     public function register()
     {
@@ -43,11 +88,18 @@ class AuthController extends Controller
         // return response()->json(['message' => 'Pendaftaran']);
 
         return response()->json([
+            'status' => true,
+            'error' => false,
             'message' => 'success',
             'user' => $user,
         ], 200);
     }else{
-        return  response()->json(['message'=>'Pendaftaraan gagal']);
+        return response()->json([
+            'status' => false,
+            'error' => false,
+            'message' => 'Error',
+            'data' => null,
+        ], 200);
     }
 
     }

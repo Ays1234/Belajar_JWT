@@ -14,8 +14,17 @@ class CreateBanksTable extends Migration
     public function up()
     {
         Schema::create('banks', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->uuid('id')->primary();
+            $table->string('name');
+            $table->string('acronym');
+            $table->char('code', 30);
+            $table->string('icon', 150);
+            $table->boolean('status')->default(true);
+            $table->json('createby');
+            $table->json('updateby')->null;
+            $table->timestamp('created_at');
+            // $table->timestamps('updated_at');
+            // $table->timestamps('deleted_at');
         });
     }
 

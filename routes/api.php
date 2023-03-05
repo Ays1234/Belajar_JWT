@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BankController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +20,24 @@ use App\Http\Controllers\AuthController;
 //     return $request->user();
 // });
 
-Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router){
+// Route::namespace('Auth')->group(function (){
+//     Route::post('register', 'AuthController');
+//     Route::post('login', 'AuthController');
+// });
+
+Route::group(['middleware' => 'api','prefix' => 'au'], function ($router){
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
+    Route::post('add_bank', [BankController::class, 'add_bank']);
+    // This add bank
+   
 });
+
+// Route::get('bank', [BankController::class, 'índex']);
+
+// Route::post('bank_add', [BankController::class, 'bank_add']);
+// Route::post('refresh', [BankController::class, 'refresh']);
+// Route::post('me', [BankController::class, 'me']);
