@@ -13,13 +13,15 @@ class BankController extends Controller
 
     public function __construct()
     {
-        $this->middleware('api', ['except' => ['add_bank', 'edit_bank']]);
+        $this->middleware('api:auth', ['except' => ['add_bank', 'update_bank', 'delete_bank']]);
     }
 
     // public function index(){
     //     $data = Bank::all();
     // }
 
+
+    
     public function add_bank()
     {
         $validator = Validator::make(
@@ -30,8 +32,8 @@ class BankController extends Controller
                 'code' => 'required',
                 'icon' => 'required',
                 'status' => 'required',
-                'createBy' => 'required',
-                'updatedBy' => 'required'
+                'createby' => 'required',
+                'updateby' => 'required'
             ]
         );
         if ($validator->fails()) {
@@ -51,9 +53,89 @@ class BankController extends Controller
             'code' => request('code'),
             'icon' => request('icon'),
             'status' => request('status'),
-            'createBy' => request('createBy'),
-            'updatedBy' => request('updatedBy')
+            'createby' => request('createby'),
+            'updateby' => request('updateby')
         ]);
+
+        if ($bank) {
+            // return response()->json(['message' => 'Pendaftaran']);
+
+            return response()->json([
+                'status' => true,
+                'error' => false,
+                'message' => 'success',
+                'data' => $bank,
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'error' => false,
+                'message' => 'Error',
+                'data' => null,
+            ], 200);
+        }
+    }
+
+
+    public function update_bank(request $Request, $id)
+    {
+        $validator = Validator::make(
+            request()->all(),
+            [
+                'name' => 'required',
+                'acronym' => 'required',
+                'code' => 'required',
+                'icon' => 'required',
+                'status' => 'required',
+                'createby' => 'required',
+                'updateby' => 'required'
+            ]
+        );
+        if ($validator->fails()) {
+            // return response()->json($validator->messages());
+
+            return response()->json([
+                'status' => false,
+                'error' => false,
+                'message' => 'Error',
+                'data' => null,
+            ], 200);
+        }
+
+        $updatebank = Bank::find($id);
+        $bank = $updatebank->update([
+            'name' => request('name'),
+            'acronym' => request('acronym'),
+            'code' => request('code'),
+            'icon' => request('icon'),
+            'status' => request('status'),
+            'createby' => request('createby'),
+            'updateby' => request('updateby')
+        ]);
+
+        if ($bank) {
+            // return response()->json(['message' => 'Pendaftaran']);
+
+            return response()->json([
+                'status' => true,
+                'error' => false,
+                'message' => 'success',
+                'data' => $bank,
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'error' => false,
+                'message' => 'Error',
+                'data' => null,
+            ], 200);
+        }
+    }
+
+    public function delete_bank(request $Request, $id)
+    {
+        $deletebank = Bank::find($id);
+        $bank = $deletebank->delete();
 
         if ($bank) {
             // return response()->json(['message' => 'Pendaftaran']);

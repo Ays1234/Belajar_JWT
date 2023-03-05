@@ -19,7 +19,7 @@ class Bank extends Model  implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name' , 'acronym','code', 'icon', 'status', 'createBy', 'updatedBy'
+        'name' , 'acronym','code', 'icon', 'status', 'createby', 'updateby'
     ];
 
 

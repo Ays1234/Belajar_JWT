@@ -25,13 +25,15 @@ use App\Http\Controllers\BankController;
 //     Route::post('login', 'AuthController');
 // });
 
-Route::group(['middleware' => 'api','prefix' => 'au'], function ($router){
+Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router){
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
     Route::post('add_bank', [BankController::class, 'add_bank']);
+    Route::post('update_bank/{id}', [BankController::class, 'update_bank']);
+    Route::post('delete_bank/{id}', [BankController::class, 'delete_bank']);
     // This add bank
    
 });
