@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Traits\Uuid;
+use Illuminate\Notifications\Notifiable;
 
 class UserBankAccount extends Model  implements JWTSubject
 {

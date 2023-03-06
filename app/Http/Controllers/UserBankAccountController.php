@@ -7,11 +7,11 @@ use App\Models\UserBankAccount;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
-class UserBankAccountContoller extends Controller
+class UserBankAccountController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('api:auth', ['except' => ['add_user_bank_account', 'update_bank', 'delete_bank']]);
+        $this->middleware('api:auth', ['except' => ['add_user_bank_account', 'update_user_bank_account', 'delete_user_bank_account']]);
     }
 
     // public function index(){
@@ -44,7 +44,7 @@ class UserBankAccountContoller extends Controller
             ], 200);
         }
 
-        $userbankaccount = Bank::create([
+        $userbankaccount = UserBankAccount::create([
             'user_id' => request('user_id'),
             'userData' => request('userData'),
             'bankData' => request('bankData'),
@@ -73,18 +73,17 @@ class UserBankAccountContoller extends Controller
     }
 
 
-    public function update_bank(request $Request, $id)
+    public function update_user_bank_account(request $Request, $id)
     {
         $validator = Validator::make(
             request()->all(),
             [
-                'name' => 'required',
-                'acronym' => 'required',
-                'code' => 'required',
-                'icon' => 'required',
-                'status' => 'required',
-                'createby' => 'required',
-                'updateby' => 'required'
+                'user_id' => 'required',
+                'userData' => 'required',
+                'bankData' => 'required',
+                'branch' => 'required',
+                'account_name' => 'required',
+                'account_number' => 'required'
             ]
         );
         if ($validator->fails()) {
@@ -98,25 +97,24 @@ class UserBankAccountContoller extends Controller
             ], 200);
         }
 
-        $updatebank = Bank::find($id);
-        $bank = $updatebank->update([
-            'name' => request('name'),
-            'acronym' => request('acronym'),
-            'code' => request('code'),
-            'icon' => request('icon'),
-            'status' => request('status'),
-            'createby' => request('createby'),
-            'updateby' => request('updateby')
+        $updateuserbankaccount = UserBankAccount::find($id);
+        $userbankaccount = $updateuserbankaccount->update([
+            'user_id' => request('user_id'),
+            'userData' => request('userData'),
+            'bankData' => request('bankData'),
+            'branch' => request('branch'),
+            'account_name' => request('account_name'),
+            'account_number' => request('account_number')
         ]);
 
-        if ($bank) {
+        if ($userbankaccount) {
             // return response()->json(['message' => 'Pendaftaran']);
 
             return response()->json([
                 'status' => true,
                 'error' => false,
                 'message' => 'success',
-                'data' => $bank,
+                'data' => $userbankaccount,
             ], 200);
         } else {
             return response()->json([
@@ -128,19 +126,19 @@ class UserBankAccountContoller extends Controller
         }
     }
 
-    public function delete_bank(request $Request, $id)
+    public function delete_user_bank_account(request $Request, $id)
     {
-        $deletebank = Bank::find($id);
-        $bank = $deletebank->delete();
+        $deleteuserbankaccount = UserBankAccount::find($id);
+        $userbankaccount = $deleteuserbankaccount->delete();
 
-        if ($bank) {
-            // return response()->json(['message' => 'Pendaftaran']);
+        if ($userbankaccount) {
+          
 
             return response()->json([
                 'status' => true,
                 'error' => false,
                 'message' => 'success',
-                'data' => $bank,
+                'data' => $userbankaccount,
             ], 200);
         } else {
             return response()->json([

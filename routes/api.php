@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\UserBankAccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,9 +37,9 @@ Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router){
     Route::post('update_bank/{id}', [BankController::class, 'update_bank']);
     Route::post('delete_bank/{id}', [BankController::class, 'delete_bank']);
   
-    // This add bank
-    Route::post('add_user_bank_account', [UserBankAccountContoller::class, 'add_user_bank_account']);
-    Route::post('update_user_bank_account/{id}', [UserBankAccountContoller::class, 'update_user_bank_account']);
-    Route::post('delete_update_user_bank_account/{id}', [UserBankAccountContoller::class, 'delete_update_user_bank_account']);
+    // This add user_bank_account
+    Route::post('add_user_bank_account', [UserBankAccountController::class, 'add_user_bank_account']);
+    Route::post('update_user_bank_account/{id}', [UserBankAccountController::class, 'update_user_bank_account']);
+    Route::post('delete_user_bank_account/{id}', [UserBankAccountController::class, 'delete_user_bank_account']);
   
 });

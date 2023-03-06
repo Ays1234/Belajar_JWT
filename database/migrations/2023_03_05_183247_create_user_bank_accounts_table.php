@@ -14,8 +14,14 @@ class CreateUserBankAccountsTable extends Migration
     public function up()
     {
         Schema::create('user_bank_accounts', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->uuid('id')->primary();
+            $table->json('user_id');
+            $table->json('userData');
+            $table->json('bankData');
+            $table->string('branch', 150);
+            $table->string('account_name');
+            $table->string('account_number', 30);
+            $table->timestamp('created_at');
         });
     }
 
