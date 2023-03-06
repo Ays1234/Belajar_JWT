@@ -132,8 +132,6 @@ class UserBankAccountController extends Controller
         $userbankaccount = $deleteuserbankaccount->delete();
 
         if ($userbankaccount) {
-          
-
             return response()->json([
                 'status' => true,
                 'error' => false,

@@ -19,116 +19,134 @@ class BankController extends Controller
     // public function index(){
     //     $data = Bank::all();
     // }
-
-
-    
-    public function add_bank()
+    public function add_bank(Request $request)
     {
-        $validator = Validator::make(
-            request()->all(),
-            [
-                'name' => 'required',
-                'acronym' => 'required',
-                'code' => 'required',
-                'icon' => 'required',
-                'status' => 'required',
-                'createby' => 'required',
-                'updateby' => 'required'
-            ]
-        );
+        // return $request->icon;
+        $validator = Validator::make(request()->all(), [
+            'name' => 'required',
+            'acronym' => 'required',
+            'code' => 'required',
+            'icon' => 'required|file|mimes:png,jpg',
+            'status' => 'required',
+            'createby' => 'required',
+            'updateby' => 'required',
+        ]);
         if ($validator->fails()) {
-            // return response()->json($validator->messages());
+            return response()->json($validator->messages());
 
-            return response()->json([
-                'status' => false,
-                'error' => false,
-                'message' => 'Error',
-                'data' => null,
-            ], 200);
+            return response()->json(
+                [
+                    'status' => false,
+                    'error' => false,
+                    'message' => 'Error',
+                    'data' => null,
+                ],
+                200,
+            );
         }
 
+        $fileName = time() . $request->file('icon')->getClientOriginalName();
+        $path = $request->file('icon')->storeAs('uploads/assets/bank', $fileName);
         $bank = Bank::create([
             'name' => request('name'),
             'acronym' => request('acronym'),
             'code' => request('code'),
-            'icon' => request('icon'),
+            'icon' => $path,
             'status' => request('status'),
             'createby' => request('createby'),
-            'updateby' => request('updateby')
+            'updateby' => request('updateby'),
         ]);
-
         if ($bank) {
-            // return response()->json(['message' => 'Pendaftaran']);
-
-            return response()->json([
-                'status' => true,
-                'error' => false,
-                'message' => 'success',
-                'data' => $bank,
-            ], 200);
+            return response()->json(
+                [
+                    'status' => true,
+                    'error' => false,
+                    'message' => 'success',
+                    'data' => $bank,
+                ],
+                200,
+            );
         } else {
-            return response()->json([
-                'status' => false,
-                'error' => false,
-                'message' => 'Error',
-                'data' => null,
-            ], 200);
+            return response()->json(
+                [
+                    'status' => false,
+                    'error' => false,
+                    'message' => 'Error',
+                    'data' => null,
+                ],
+                200,
+            );
         }
     }
 
-
     public function update_bank(request $Request, $id)
     {
-        $validator = Validator::make(
-            request()->all(),
-            [
-                'name' => 'required',
-                'acronym' => 'required',
-                'code' => 'required',
-                'icon' => 'required',
-                'status' => 'required',
-                'createby' => 'required',
-                'updateby' => 'required'
-            ]
-        );
+        $validator = Validator::make(request()->all(), [
+            'name' => 'required',
+            'acronym' => 'required',
+            'code' => 'required',
+            'icon' => 'required',
+            'status' => 'required',
+            'createby' => 'required',
+            'updateby' => 'required',
+        ]);
         if ($validator->fails()) {
             // return response()->json($validator->messages());
 
-            return response()->json([
-                'status' => false,
-                'error' => false,
-                'message' => 'Error',
-                'data' => null,
-            ], 200);
+            return response()->json(
+                [
+                    'status' => false,
+                    'error' => false,
+                    'message' => 'Error',
+                    'data' => null,
+                ],
+                200,
+            );
         }
 
         $updatebank = Bank::find($id);
-        $bank = $updatebank->update([
-            'name' => request('name'),
-            'acronym' => request('acronym'),
-            'code' => request('code'),
-            'icon' => request('icon'),
-            'status' => request('status'),
-            'createby' => request('createby'),
-            'updateby' => request('updateby')
-        ]);
+
+        if ($request->file('icon')) {
+            $assets = 'uploads/assets/bank' . $updatebank->icon;
+            if (File::exists($assets)) {
+                File::delete($assets);
+            }
+            $fileName = time() . $request->file('icon')->getClientOriginalName();
+            $path = $request->file('icon')->storeAs('uploads/assets/bank', $fileName);
+
+            $bank = $updatebank->update([
+                'name' => request('name'),
+                'acronym' => request('acronym'),
+                'code' => request('code'),
+                'icon' => request('icon'),
+                'status' => request('status'),
+                'createby' => request('createby'),
+                'updateby' => request('updateby'),
+            ]);
+        }
 
         if ($bank) {
             // return response()->json(['message' => 'Pendaftaran']);
 
-            return response()->json([
-                'status' => true,
-                'error' => false,
-                'message' => 'success',
-                'data' => $bank,
-            ], 200);
+            return response()->json(
+                [
+                    'status' => true,
+                    'error' => false,
+                    'message' => 'success',
+                    'data' => $bank,
+                ],
+                200,
+            );
         } else {
-            return response()->json([
-                'status' => false,
-                'error' => false,
-                'message' => 'Error',
-                'data' => null,
-            ], 200);
+            return response()->json(
+                [
+                    'status' => false,
+                    'error' => false,
+                    'message' => 'Error',
+                    'data' => null,
+                ],
+                200,
+            );
         }
     }
 
@@ -140,22 +158,27 @@ class BankController extends Controller
         if ($bank) {
             // return response()->json(['message' => 'Pendaftaran']);
 
-            return response()->json([
-                'status' => true,
-                'error' => false,
-                'message' => 'success',
-                'data' => $bank,
-            ], 200);
+            return response()->json(
+                [
+                    'status' => true,
+                    'error' => false,
+                    'message' => 'success',
+                    'data' => $bank,
+                ],
+                200,
+            );
         } else {
-            return response()->json([
-                'status' => false,
-                'error' => false,
-                'message' => 'Error',
-                'data' => null,
-            ], 200);
+            return response()->json(
+                [
+                    'status' => false,
+                    'error' => false,
+                    'message' => 'Error',
+                    'data' => null,
+                ],
+                200,
+            );
         }
     }
-
 
     public function me()
     {
@@ -184,7 +207,10 @@ class BankController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $this->guard()->factory()->getTTL() * 60
+            'expires_in' =>
+                $this->guard()
+                    ->factory()
+                    ->getTTL() * 60,
         ]);
     }
 

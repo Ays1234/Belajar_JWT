@@ -14,100 +14,58 @@ class AuthController extends Controller
     //
     public function __construct()
     {
-        $this->middleware('api', ['except' => ['login', 'register']]);
+        $this->middleware('api:auth', ['except' => ['login', 'register']]);
     }
-
-//     public function add_bank()
-//     {
-//         $validator = Validator::make(request()->all(),
-//         ['name' => 'required',
-//         'acronym' => 'required',
-//          'code' => 'required',
-//         'icon'=>'required',
-//     'status' => 'required'
-//     ]);
-//     if($validator->fails()){
-//         // return response()->json($validator->messages());
-
-//         return response()->json(['message' => 'Ggagk']);
-//     }
-
-//     $bank =Bank::create([
-//         'name' => request('name')
-
-//     //     'acronym' => request('acronym'),
-//     // 'code' => request('code'),
-//     // 'icon'=> request('icon'),
-//     // 'status'=> request('status')
-// ]);
-
-//     if ($bank){
-//         // return response()->json(['message' => 'Pendaftaran']);
-
-//         return response()->json([
-//             'status' => true,
-//             'error' => false,
-//             'message' => 'success',
-//             'user' => $bank,
-//         ], 200);
-//     }else{
-//         return response()->json([
-//             'status' => false,
-//             'error' => false,
-//             'message' => 'Error',
-//             'data' => null,
-//         ], 200);
-//     }
-
-//     }
 
     public function register()
     {
-        $validator = Validator::make(request()->all(),
-        ['name' => 'required',
-        'email' => 'required|email|unique:users',
-         'password' => 'required']);
-    if($validator->fails()){
-        return response()->json($validator->messages());
+        $validator = Validator::make(request()->all(), ['name' => 'required', 'email' => 'required|email|unique:users', 'password' => 'required']);
+        if ($validator->fails()) {
+            return response()->json($validator->messages());
+        }
+
+        $user = User::create([
+            'name' => request('name'),
+            'username' => request('username'),
+            'email' => request('email'),
+            'phone' => request('phone'),
+            'dial_code' => request('dial_code'),
+            'country_code' => request('country_code'),
+            'password' => Hash::make(request('password')),
+            'gender' => request('gender'),
+            'dob' => request('dob'),
+            'avatar' => request('avatar'),
+        ]);
+
+        if ($user) {
+            // return response()->json(['message' => 'Pendaftaran']);
+
+            return response()->json(
+                [
+                    'status' => true,
+                    'error' => false,
+                    'message' => 'success',
+                    'user' => $user,
+                ],
+                200,
+            );
+        } else {
+            return response()->json(
+                [
+                    'status' => false,
+                    'error' => false,
+                    'message' => 'Error',
+                    'data' => null,
+                ],
+                200,
+            );
+        }
     }
 
-    $user =User::create([
-        'name' => request('name'),
-        'username' => request('username'),
-    'email' => request('email'),
-    'phone'=> request('phone'),
-    'dial_code'=> request('dial_code'),
-    'country_code'=> request('country_code'),
-    'password' => Hash::make(request('password')),
-    'gender'=>request('gender'),
-    'dob'=>request('dob'),
-    'avatar'=>request('avatar')
-]);
-
-    if ($user){
-        // return response()->json(['message' => 'Pendaftaran']);
-
-        return response()->json([
-            'status' => true,
-            'error' => false,
-            'message' => 'success',
-            'user' => $user,
-        ], 200);
-    }else{
-        return response()->json([
-            'status' => false,
-            'error' => false,
-            'message' => 'Error',
-            'data' => null,
-        ], 200);
-    }
-
-    }
-
-
-    public function login(){
+    public function login()
+    {
         $credentials = request(['email', 'password']);
-        if(! $token = auth()->attempt($credentials)){
+        if (!($token = auth()->attempt($credentials))) {
             return response()->json(['error' => 'Unauthorized', 401]);
         }
         return $this->respondWithToken($token);
@@ -152,7 +110,10 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $this->guard()->factory()->getTTL() * 60
+            'expires_in' =>
+                $this->guard()
+                    ->factory()
+                    ->getTTL() * 60,
         ]);
     }
 
@@ -165,5 +126,4 @@ class AuthController extends Controller
     {
         return Auth::guard();
     }
-
 }
