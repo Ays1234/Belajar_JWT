@@ -31,15 +31,14 @@ Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router){
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
+      // This add bank
     Route::post('add_bank', [BankController::class, 'add_bank']);
     Route::post('update_bank/{id}', [BankController::class, 'update_bank']);
     Route::post('delete_bank/{id}', [BankController::class, 'delete_bank']);
+  
     // This add bank
-   
+    Route::post('add_user_bank_account', [UserBankAccountContoller::class, 'add_user_bank_account']);
+    Route::post('update_user_bank_account/{id}', [UserBankAccountContoller::class, 'update_user_bank_account']);
+    Route::post('delete_update_user_bank_account/{id}', [UserBankAccountContoller::class, 'delete_update_user_bank_account']);
+  
 });
-
-// Route::get('bank', [BankController::class, 'índex']);
-
-// Route::post('bank_add', [BankController::class, 'bank_add']);
-// Route::post('refresh', [BankController::class, 'refresh']);
-// Route::post('me', [BankController::class, 'me']);
