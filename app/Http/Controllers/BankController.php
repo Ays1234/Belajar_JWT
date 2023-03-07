@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Bank;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
+use File;
 
 class BankController extends Controller
 {
@@ -45,8 +48,9 @@ class BankController extends Controller
             );
         }
 
-        $fileName = time() . $request->file('icon')->getClientOriginalName();
-        $path = $request->file('icon')->storeAs('uploads/assets/bank', $fileName);
+        if ($request->file('icon')) {
+            $path = $request->file('icon')->store('icon');
+        }
         $bank = Bank::create([
             'name' => request('name'),
             'acronym' => request('acronym'),
@@ -79,13 +83,13 @@ class BankController extends Controller
         }
     }
 
-    public function update_bank(request $Request, $id)
+    public function update_bank(Request $request, $id)
     {
         $validator = Validator::make(request()->all(), [
             'name' => 'required',
             'acronym' => 'required',
             'code' => 'required',
-            'icon' => 'required',
+            'icon' => 'file|mimes:png,jpg',
             'status' => 'required',
             'createby' => 'required',
             'updateby' => 'required',
@@ -103,27 +107,32 @@ class BankController extends Controller
                 200,
             );
         }
-
         $updatebank = Bank::find($id);
-
         if ($request->file('icon')) {
-            $assets = 'uploads/assets/bank' . $updatebank->icon;
-            if (File::exists($assets)) {
-                File::delete($assets);
+            if ($request->icon) {
+                Storage::delete($updatebank->icon);
             }
-            $fileName = time() . $request->file('icon')->getClientOriginalName();
-            $path = $request->file('icon')->storeAs('uploads/assets/bank', $fileName);
-
-            $bank = $updatebank->update([
-                'name' => request('name'),
-                'acronym' => request('acronym'),
-                'code' => request('code'),
-                'icon' => request('icon'),
-                'status' => request('status'),
-                'createby' => request('createby'),
-                'updateby' => request('updateby'),
-            ]);
+            $path = $request->file('icon')->store('icon');
         }
+
+        $bank = $updatebank->update([
+            'name' => request('name'),
+            'acronym' => request('acronym'),
+            'code' => request('code'),
+            'icon' => $path,
+            'status' => request('status'),
+            'createby' => request('createby'),
+            'updateby' => request('updateby'),
+        ]);
+        $bank = $updatebank->update([
+            'name' => request('name'),
+            'acronym' => request('acronym'),
+            'code' => request('code'),
+            'icon' => $path,
+            'status' => request('status'),
+            'createby' => request('createby'),
+            'updateby' => request('updateby'),
+        ]);
 
         if ($bank) {
             // return response()->json(['message' => 'Pendaftaran']);
@@ -150,9 +159,13 @@ class BankController extends Controller
         }
     }
 
-    public function delete_bank(request $Request, $id)
+    public function delete_bank(Request $request, $id)
     {
+
         $deletebank = Bank::find($id);
+            if ($deletebank->icon) {
+                Storage::delete($deletebank->icon);
+            }
         $bank = $deletebank->delete();
 
         if ($bank) {
