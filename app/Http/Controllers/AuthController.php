@@ -71,6 +71,16 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
+    public function change_password()
+    {
+        $validator = Validator::make(request()->all(), ['name' => 'required', 'email' => 'required|email|unique:users', 'password' => 'required']);
+        $credentials = request(['email', 'password']);
+        if (!($token = auth()->attempt($credentials))) {
+            return response()->json(['error' => 'Unauthorized', 401]);
+        }
+        return $this->respondWithToken($token);
+    }
+
     public function me()
     {
         return response()->json($this->guard()->user());
